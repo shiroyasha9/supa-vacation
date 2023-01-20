@@ -4,6 +4,7 @@ import { readFileSync } from 'fs';
 import Handlebars from 'handlebars';
 import NextAuth from 'next-auth';
 import EmailProvider from 'next-auth/providers/email';
+import GoogleProvider from 'next-auth/providers/google';
 import nodemailer from 'nodemailer';
 import path from 'path';
 
@@ -72,6 +73,10 @@ export default NextAuth({
   },
   events: { createUser: sendWelcomeEmail },
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_ID,
+      clientSecret: process.env.GOOGLE_SECRET
+    }),
     EmailProvider({
       maxAge: 10 * 60,
       sendVerificationRequest
