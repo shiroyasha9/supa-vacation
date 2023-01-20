@@ -1,9 +1,7 @@
 import Grid from '@/components/Grid';
 import Layout from '@/components/Layout';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { getSession } from 'next-auth/react';
-
-const prisma = new PrismaClient();
 
 export async function getServerSideProps(context) {
   // Check if user is authenticated

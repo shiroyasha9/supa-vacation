@@ -1,13 +1,11 @@
 import Layout from '@/components/Layout';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
-// Instantiate Prisma Client
-const prisma = new PrismaClient();
 
 const ListedHome = (home = null) => {
   const router = useRouter();

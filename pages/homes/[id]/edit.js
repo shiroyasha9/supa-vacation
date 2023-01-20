@@ -1,10 +1,8 @@
 import Layout from '@/components/Layout';
 import ListingForm from '@/components/ListingForm';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import axios from 'axios';
 import { getSession } from 'next-auth/react';
-
-const prisma = new PrismaClient();
 
 export async function getServerSideProps(context) {
   const session = await getSession(context);
