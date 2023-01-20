@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import ImageUpload from '@/components/ImageUpload';
+import Input from '@/components/Input';
+import axios from 'axios';
+import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
-import * as Yup from 'yup';
+import { useState } from 'react';
 import { toast } from 'react-hot-toast';
-import { Formik, Form } from 'formik';
-import Input from '@/components/Input';
-import ImageUpload from '@/components/ImageUpload';
+import * as Yup from 'yup';
 
 const ListingSchema = Yup.object().shape({
   title: Yup.string().trim().required(),
@@ -13,14 +14,14 @@ const ListingSchema = Yup.object().shape({
   price: Yup.number().positive().integer().min(1).required(),
   guests: Yup.number().positive().integer().min(1).required(),
   beds: Yup.number().positive().integer().min(1).required(),
-  baths: Yup.number().positive().integer().min(1).required(),
+  baths: Yup.number().positive().integer().min(1).required()
 });
 
 const ListingForm = ({
   initialValues = null,
   redirectPath = '',
   buttonText = 'Submit',
-  onSubmit = () => null,
+  onSubmit = () => null
 }) => {
   const router = useRouter();
 
@@ -28,7 +29,21 @@ const ListingForm = ({
   const [imageUrl, setImageUrl] = useState(initialValues?.image ?? '');
 
   const upload = async image => {
-    // TODO: Upload image to remote storage
+    if (!image) return;
+
+    let toastId;
+    try {
+      setDisabled(true);
+      toastId = toast.loading('Uploading...');
+      const { data } = await axios.post('/api/image-upload', { image });
+      setImageUrl(data?.url);
+      toast.success('Successfully uploaded', { id: toastId });
+    } catch (e) {
+      toast.error('Unable to upload', { id: toastId });
+      setImageUrl('');
+    } finally {
+      setDisabled(false);
+    }
   };
 
   const handleOnSubmit = async (values = null) => {
@@ -58,12 +73,12 @@ const ListingForm = ({
     price: 0,
     guests: 1,
     beds: 1,
-    baths: 1,
+    baths: 1
   };
 
   return (
     <div>
-      <div className="mb-8 max-w-md">
+      <div className='mb-8 max-w-md'>
         <ImageUpload
           initialImage={{ src: image, alt: initialFormValues.title }}
           onChangePicture={upload}
@@ -77,67 +92,67 @@ const ListingForm = ({
         onSubmit={handleOnSubmit}
       >
         {({ isSubmitting, isValid }) => (
-          <Form className="space-y-8">
-            <div className="space-y-6">
+          <Form className='space-y-8'>
+            <div className='space-y-6'>
               <Input
-                name="title"
-                type="text"
-                label="Title"
-                placeholder="Entire rental unit - Amsterdam"
+                name='title'
+                type='text'
+                label='Title'
+                placeholder='Entire rental unit - Amsterdam'
                 disabled={disabled}
               />
 
               <Input
-                name="description"
-                type="textarea"
-                label="Description"
-                placeholder="Very charming and modern apartment in Amsterdam..."
+                name='description'
+                type='textarea'
+                label='Description'
+                placeholder='Very charming and modern apartment in Amsterdam...'
                 disabled={disabled}
                 rows={5}
               />
 
               <Input
-                name="price"
-                type="number"
-                min="0"
-                label="Price per night"
-                placeholder="100"
+                name='price'
+                type='number'
+                min='0'
+                label='Price per night'
+                placeholder='100'
                 disabled={disabled}
               />
 
-              <div className="flex space-x-4">
+              <div className='flex space-x-4'>
                 <Input
-                  name="guests"
-                  type="number"
-                  min="0"
-                  label="Guests"
-                  placeholder="2"
+                  name='guests'
+                  type='number'
+                  min='0'
+                  label='Guests'
+                  placeholder='2'
                   disabled={disabled}
                 />
                 <Input
-                  name="beds"
-                  type="number"
-                  min="0"
-                  label="Beds"
-                  placeholder="1"
+                  name='beds'
+                  type='number'
+                  min='0'
+                  label='Beds'
+                  placeholder='1'
                   disabled={disabled}
                 />
                 <Input
-                  name="baths"
-                  type="number"
-                  min="0"
-                  label="Baths"
-                  placeholder="1"
+                  name='baths'
+                  type='number'
+                  min='0'
+                  label='Baths'
+                  placeholder='1'
                   disabled={disabled}
                 />
               </div>
             </div>
 
-            <div className="flex justify-end">
+            <div className='flex justify-end'>
               <button
-                type="submit"
+                type='submit'
                 disabled={disabled || !isValid}
-                className="bg-rose-600 text-white py-2 px-6 rounded-md focus:outline-none focus:ring-4 focus:ring-rose-600 focus:ring-opacity-50 hover:bg-rose-500 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-rose-600"
+                className='bg-rose-600 text-white py-2 px-6 rounded-md focus:outline-none focus:ring-4 focus:ring-rose-600 focus:ring-opacity-50 hover:bg-rose-500 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-rose-600'
               >
                 {isSubmitting ? 'Submitting...' : buttonText}
               </button>
@@ -157,11 +172,11 @@ ListingForm.propTypes = {
     price: PropTypes.number,
     guests: PropTypes.number,
     beds: PropTypes.number,
-    baths: PropTypes.number,
+    baths: PropTypes.number
   }),
   redirectPath: PropTypes.string,
   buttonText: PropTypes.string,
-  onSubmit: PropTypes.func,
+  onSubmit: PropTypes.func
 };
 
 export default ListingForm;
