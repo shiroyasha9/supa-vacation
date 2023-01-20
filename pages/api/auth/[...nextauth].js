@@ -55,7 +55,7 @@ const sendWelcomeEmail = async ({ user }) => {
       subject: 'Welcome to SupaVacation! 🎉',
       html: emailTemplate({
         base_url: process.env.NEXTAUTH_URL,
-        support_email: 'support@themodern.dev'
+        support_email: 'mubinansari910@gmail.com'
       })
     });
   } catch (error) {
